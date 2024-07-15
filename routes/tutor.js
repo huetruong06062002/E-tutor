@@ -1,12 +1,25 @@
-const express = require('express');
-const { createService, getServices } = require('../controllers/tutorController');
-const authMiddleware = require('../middleware/authMiddleware');
+const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
+const tutorController = require("../controllers/tutorController");
 
-// Tạo dịch vụ mới (chỉ gia sư được phép)
-router.post('/services', authMiddleware('tutor'), createService);
+// Routes for Tutor CRUD
+router.post("/", authMiddleware("admin"), tutorController.createTutor);
+router.get("/:id", authMiddleware(), tutorController.getTutorById);
+router.get("/", authMiddleware(), tutorController.getAllTutors);
+router.put("/:id", authMiddleware("admin"), tutorController.updateTutor);
+router.delete("/:id", authMiddleware("admin"), tutorController.deleteTutor);
 
-// Lấy danh sách dịch vụ (công khai)
-router.get('/services', getServices);
+// Additional Tutor Functions
+router.get(
+  "/:tutorId/courses",
+  authMiddleware(),
+  tutorController.getTutorCourses
+);
+router.get(
+  "/:tutorId/ratings",
+  authMiddleware(),
+  tutorController.getTutorRating
+);
 
 module.exports = router;

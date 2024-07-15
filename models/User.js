@@ -28,8 +28,35 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+userSchema.post("save", async function (doc, next) {
+  if (doc.role === "tutor") {
+    try {
+      const Tutor = mongoose.model("Tutor");
+      const tutor = new Tutor({
+        userId: doc._id,
+        description: "Enter description here", // You can customize this based on your requirements
+        ratings: [],
+        info: {
+          name: doc.name,
+          image: "default_image_url", // Default image for tutor profile
+          address: "Enter address here", // You can customize this based on your requirements
+        },
+        moreProducts: [],
+      });
+      await tutor.save();
+      next();
+    } catch (err) {
+      next(err);
+    }
+  } else {
+    next();
+  }
+});
+
 userSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;
