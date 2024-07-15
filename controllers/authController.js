@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const upload = require('../middleware/upload'); // Import middleware for file upload
+const multer = require('multer');
 
 exports.register = async (req, res) => {
   try {
