@@ -13,13 +13,19 @@ const userSchema = new mongoose.Schema({
   degree: String,
   skills: [String],
   identityInfo: String,
+}, {
+  timestamps: true
 });
 
 userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
+  if (!this.isModified('password')) return next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
   }
-  next();
 });
 
 userSchema.methods.comparePassword = function (password) {

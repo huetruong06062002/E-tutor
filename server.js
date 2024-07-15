@@ -2,8 +2,9 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./utils/db');
 const authRoutes = require('./routes/auth');
-const tutorsRoutes = require('./routes/tutor');
-const reviewsRoutes = require('./routes/review');
+const tutorRoutes = require('./routes/tutor');
+const reviewRoutes = require('./routes/review');
+const adminRoutes = require('./routes/admin');
 
 dotenv.config();
 
@@ -17,7 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/tutors', tutorsRoutes);
-app.use('/api/reviews', reviewsRoutes);
+app.use('/api/tutors', tutorRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

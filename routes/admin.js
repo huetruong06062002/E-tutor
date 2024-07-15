@@ -1,11 +1,11 @@
 const express = require('express');
-const { manageUsers, updateSystemSettings } = require('../controllers/adminController');
-const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
+const adminController = require('../controllers/adminController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-router.use(authMiddleware);
-
-router.get('/users', manageUsers);
-router.post('/system/settings', updateSystemSettings);
+router.get('/users', authMiddleware('admin'), adminController.getAllUsers);
+router.delete('/users/:id', authMiddleware('admin'), adminController.deleteUser);
+router.post('/courses', authMiddleware('admin'), adminController.createCourse);
+router.delete('/courses/:id', authMiddleware('admin'), adminController.deleteCourse);
 
 module.exports = router;
