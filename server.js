@@ -6,6 +6,7 @@ const tutorRoutes = require('./routes/tutor');
 const reviewRoutes = require('./routes/review');
 const adminRoutes = require('./routes/admin');
 const coursesRoutes = require('./routes/courses');
+const cors = require('cors');
 dotenv.config();
 
 const app = express();
