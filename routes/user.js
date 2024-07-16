@@ -13,4 +13,5 @@ router.put('/password/:id', userController.changePassword);
 
 router.get('/user-profile/:id', userController.getUserById);
 
+router.get('/tutors', userController.getTutors);
 module.exports = router;

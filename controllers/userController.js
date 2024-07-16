@@ -107,7 +107,7 @@ exports.changePassword = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
-
+// Get user by id
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -118,6 +118,19 @@ exports.getUserById = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     console.error("Get user by id error:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+//get all users
+exports.getTutors = async (req, res) => {
+  try {
+    const tutors = await User.find({ role: "tutor" }).select("-password");
+    res.status(200).json(tutors);
+  } catch (error) {
+    console.error("Get tutors error:", error);
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });

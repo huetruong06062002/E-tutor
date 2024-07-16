@@ -22,4 +22,6 @@ router.get(
   tutorController.getTutorRating
 );
 
+router.get("/turtor-detail/:id", tutorController.getTurtorDetailByuserID);
+
 module.exports = router;

@@ -68,12 +68,11 @@ const updateCourse = async (req, res) => {
 // DELETE /api/courses/:id - Xóa khóa học
 const deleteCourse = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.id);
-    if (!course) {
+    const result = await Course.deleteOne({ _id: req.params.id });
+    if (result.deletedCount === 0) {
       return res.status(404).json({ message: 'Course not found' });
     }
 
-    await course.remove();
     res.json({ message: 'Course deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
