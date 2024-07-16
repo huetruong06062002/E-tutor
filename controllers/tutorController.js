@@ -99,7 +99,7 @@ exports.getTutorRating = async (req, res) => {
 exports.getTurtorDetailByuserID = async (req, res) => {
   const { id } = req.params;
   try {
-    const tutor = await Tutor.findOne({ userId: id });
+    const tutor = await Tutor.findById(id);
     if (!tutor) {
       return res.status(404).json({ message: "Tutor not found" });
     }
