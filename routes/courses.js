@@ -17,4 +17,6 @@ router.put('/:id', coursesController.updateCourse);
 // DELETE /api/courses/:id - Xóa khóa học
 router.delete('/:id', coursesController.deleteCourse);
 
+router.get("/tutor/:id", coursesController.getCourseByTutor);
+
 module.exports = router;
