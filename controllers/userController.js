@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const path = require('path');
 const fs = require('fs');
+const multer = require('multer');
 
 // Middleware for file upload
 const upload = require('../middleware/upload'); 
