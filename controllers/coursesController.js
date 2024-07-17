@@ -1,9 +1,12 @@
-const Course = require('../models/Course');
+const Course = require("../models/Course");
 
 // GET /api/courses - Lấy danh sách tất cả các khóa học
 const getAllCourses = async (req, res) => {
   try {
-    const courses = await Course.find().populate('tutor', 'info.name info.image');
+    const courses = await Course.find().populate(
+      "tutor",
+      "info.name info.image"
+    );
     res.json(courses);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -13,9 +16,12 @@ const getAllCourses = async (req, res) => {
 // GET /api/courses/:id - Lấy thông tin của khóa học theo id
 const getCourseById = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.id).populate('tutor', 'info.name info.image');
+    const course = await Course.findById(req.params.id).populate(
+      "tutor",
+      "info.name info.image"
+    );
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
     res.json(course);
   } catch (err) {
@@ -31,7 +37,7 @@ const createCourse = async (req, res) => {
     description,
     tutor,
     price,
-    image
+    image,
   });
 
   try {
@@ -49,7 +55,7 @@ const updateCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
     if (!course) {
-      return res.status(404).json({ message: 'Course not found' });
+      return res.status(404).json({ message: "Course not found" });
     }
 
     course.title = title;
@@ -78,10 +84,27 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+const getCourseByTutor = async (req, res) => {
+  const { id } = req.params;
+  if(!id) {
+    return res.status(404).json({ message: "Not found" });
+  }
+  try {
+    const courses = await Course.find({ tutor: id });
+    if(!courses) {
+      return res.status(404).json({ message: "Courses not found" });
+    }
+    res.status(200).json(courses);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getAllCourses,
   getCourseById,
   createCourse,
   updateCourse,
-  deleteCourse
+  deleteCourse,
+  getCourseByTutor,
 };

@@ -1,10 +1,10 @@
-const User = require('../models/User');
-const path = require('path');
-const fs = require('fs');
-const multer = require('multer');
-
+const User = require("../models/User");
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
+const bcrypt = require("bcrypt");
 // Middleware for file upload
-const upload = require('../middleware/upload'); 
+const upload = require("../middleware/upload");
 
 exports.getImageById = async (req, res) => {
   try {
@@ -13,35 +13,38 @@ exports.getImageById = async (req, res) => {
 
     console.log("user", user);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     if (!user.image) {
-      return res.status(404).json({ message: 'Image not found' });
+      return res.status(404).json({ message: "Image not found" });
     }
 
-    const imagePath = path.join(__dirname, '..', user.image);
+    const imagePath = path.join(__dirname, "..", user.image);
     console.log("imagePath: " + imagePath);
     if (fs.existsSync(imagePath)) {
       res.sendFile(imagePath);
     } else {
-      res.status(404).json({ message: 'Image file not found' });
+      res.status(404).json({ message: "Image file not found" });
     }
   } catch (error) {
-    console.error('Error retrieving image:', error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
+    console.error("Error retrieving image:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
-
 
 // Update profile
 exports.updateProfile = async (req, res) => {
   const { id } = req.params;
   upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
-      return res.status(400).json({ message: 'File upload error', error: err });
+      return res.status(400).json({ message: "File upload error", error: err });
     } else if (err) {
-      return res.status(500).json({ message: 'Internal server error', error: err });
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: err });
     }
 
     try {
@@ -51,7 +54,7 @@ exports.updateProfile = async (req, res) => {
       // Find user by id
       const user = await User.findById(id);
       if (!user) {
-        return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ message: "User not found" });
       }
 
       // Update user fields
@@ -65,14 +68,15 @@ exports.updateProfile = async (req, res) => {
       }
 
       await user.save();
-      res.status(200).json({ message: 'Profile updated successfully', user });
+      res.status(200).json({ message: "Profile updated successfully", user });
     } catch (error) {
-      console.error('Update profile error:', error);
-      res.status(500).json({ message: 'Internal server error', error: error.message });
+      console.error("Update profile error:", error);
+      res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
     }
   });
 };
-
 
 // Change password
 exports.changePassword = async (req, res) => {
@@ -83,21 +87,52 @@ exports.changePassword = async (req, res) => {
     // Find user by id
     const user = await User.findById(id);
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Compare old password
     const passwordMatch = await bcrypt.compare(oldPassword, user.password);
     if (!passwordMatch) {
-      return res.status(400).json({ message: 'Old password is incorrect' });
+      return res.status(400).json({ message: "Old password is incorrect" });
     }
 
     // Hash new password and update user
     user.password = bcrypt.hashSync(newPassword, 10);
     await user.save();
-    res.status(200).json({ message: 'Password changed successfully' });
+    res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {
-    console.error('Change password error:', error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
+    console.error("Change password error:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+// Get user by id
+exports.getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Get user by id error:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+
+//get all users
+exports.getTutors = async (req, res) => {
+  try {
+    const tutors = await User.find({ role: "tutor" }).select("-password");
+    res.status(200).json(tutors);
+  } catch (error) {
+    console.error("Get tutors error:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };

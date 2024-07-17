@@ -21,5 +21,7 @@ router.get(
   authMiddleware(),
   tutorController.getTutorRating
 );
+router.get("/pulic/:id", tutorController.getTutorById);
+router.get("/turtor-detail/:id", tutorController.getTurtorDetailByuserID);
 
 module.exports = router;
